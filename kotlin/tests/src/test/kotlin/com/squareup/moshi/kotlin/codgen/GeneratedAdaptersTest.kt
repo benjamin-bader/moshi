@@ -1180,6 +1180,17 @@ class GeneratedAdaptersTest {
       assertThat(e).hasMessageContaining("Failed to find the generated JsonAdapter class")
     }
   }
+
+  enum class MyEnum { ONE, TWO, THREE }
+
+  @JsonClass(generateAdapter = true)
+  data class HasNullableEnum(val theValue: MyEnum?)
+
+  @Test fun wtf() {
+    val moshi = Moshi.Builder().build()
+    val adapter = moshi.adapter<HasNullableEnum>()
+    assertThat(adapter.toJson(HasNullableEnum(null))).isEqualTo("""{"theValue":null}""")
+  }
 }
 
 // Has to be outside to avoid Types seeing an owning class
